@@ -1,0 +1,727 @@
+<odoo>
+    <data>
+        <template id="new_assets_product_view" inherit_id="website.assets_frontend">
+            <xpath expr="link[last()]" position="after">
+                <link rel="stylesheet" type="text/scss" href="/website_membership_management/static/src/less/custom.scss" />
+                <link rel="stylesheet" type="text/scss" href="/website_membership_management/static/src/less/owl.carousel.min.css" />
+                <link rel="stylesheet" type="text/scss" href="/website_membership_management/static/src/less/owl.theme.default.min.css" />
+                <script type="text/javascript" src="/website_membership_management/static/src/js/jquery.js"/>
+                <script type="text/javascript" src="/website_membership_management/static/src/js/owl.carousel.js"/>
+            </xpath>
+        </template>
+
+<!--Membership Tag in My Account -->
+        <template id='membership_main_template' name="Portal My Home : Membership" inherit_id='portal.portal_my_home'  priority="30">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <t t-if='website.get_membership_count()'>
+                    <t t-set='in_progress_check' t-value='false'/>
+                    <t t-foreach="website.get_membership_count()" t-as='membership_in_progress'>
+                        <t t-if="membership_in_progress.plan_state == 'in_progress' ">
+                            <t t-set='in_progress_check' t-value='membership_in_progress'/>
+                        </t>
+                    </t>
+                    
+                    <t t-if='in_progress_check'>
+                        <a class="list-group-item list-group-item-action d-flex align-items-center justify-content-between" t-attf-href="/my/membership/{{ slug((in_progress_check)) }}">
+                            Membership 
+                        </a>
+                    </t>
+                    <t t-else=''>
+                        <a class="list-group-item list-group-item-action d-flex align-items-center justify-content-between" t-attf-href="/my/memberships/">
+                            Membership
+                        </a>
+                    </t>
+                </t>
+                <t t-else=''>
+                    <a class="list-group-item list-group-item-action d-flex align-items-center justify-content-between" href="/my/membership/buy">
+                        Membership
+                    </a>
+                </t>
+            </xpath>
+        </template>
+<!--Membership Portal search bar -->
+        <template id="portal_my_home_menu_catalog" name="Portal layout : Catalog menu entries" inherit_id="portal.portal_breadcrumbs" priority="20">
+            <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+                <li t-if="page_name == 'Memberships'" t-attf-class="breadcrumb-item #{'active ' if membership_table else ''}">
+                    <a t-if="not membership_table" t-attf-href="/my/memberships?{{ keep_query() }}">Membership</a>
+                    <t t-else="">Membership</t>
+                </li>
+                <li t-if="page_name == 'Memberships' and not membership_table" class="breadcrumb-item active">
+                    <t t-esc="membership.name"/>
+                </li>
+            </xpath>
+        </template>
+        
+
+<!--Membership Detail Page       -->
+        <template id='membership_info'>
+            <t t-call="portal.portal_layout">
+                <t t-set='additional_title'>Membership Info </t>
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set='title'>Memberships</t>
+                </t>
+
+                <div class='container'>
+                    <t t-set='in_progress_check' t-value='bool(0)'/>
+                    <t t-set ='in_pending_check' t-value='bool(0)'/>
+                        <t t-foreach="website.get_membership_count()" t-as='membership_in_progress'>
+                            <t t-if="membership_in_progress.plan_state == 'in_progress'">
+                                <t t-set='in_progress_check' t-value='membership_in_progress'/>
+                            </t>
+                            <t t-if="membership_in_progress.plan_state == 'pending'">
+                                <t t-set='in_pending_check' t-value='membership_in_progress'/>
+                            </t>
+                        </t>
+                    <div class='row justify-content-center'>
+                        <h1>
+                            Membership Details
+                        </h1>
+                    </div>
+                    <div class='row justify-content-center'>
+                        <p class=''>
+                            A demo Message regarding the memberships and a welcoming message 
+                        </p>
+                    </div>
+                    <div class='row'>
+                        <div class='col'>
+                            <t t-if='membership.plan_state in ["draft","in_progress","pending"]'>
+                                <t t-call='website_membership_management.membership_cancel_modal'/>
+                                <button type='button'  class='btn btn-danger pull-right' data-toggle="modal" data-target="#membership_cancel" title="Want to cancel your Membership">Cancel Membership</button>
+                            </t>
+                            <t t-elif='membership.plan_state in ["expired","close","cancel"]'>
+                               <t t-set="pending_check" t-value="false"/>
+                               <t t-foreach="website.get_membership_count()" t-as='membership_renew_check'>
+                                    <t t-if="membership_renew_check.plan_state == 'in_progress' or membership_renew_check.plan_state == 'draft' or membership_renew_check.plan_state == 'pending'">
+                                        <t t-set='pending_check' t-value='true'/>
+                                    </t>
+                                </t>
+                                <t t-if='not pending_check'>
+                                    <button type='button' id='renew' class='btn btn-primary renew1 pull-right'>Renew Membership</button>
+                                </t>
+                            </t>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row membership_detail bg-white justify-content-between" >
+                        <div class='col-md-6'>
+                            <div class='plan_detail'>
+                                <t t-set="state" t-value="membership.plan_state"/>
+                                   
+                                <t t-if="state =='in_progress'">
+                                    Your current active plan is "<t t-esc='membership.product_id.name'></t>"
+                                </t>
+                                <t t-elif="state =='cancel' or state == 'close'">
+                                    Your plan "<t t-esc='membership.product_id.name'></t>" has been Cancelled.
+                                </t>
+                                <t t-elif="state =='renewed'">
+                                    Your plan "<t t-esc='membership.product_id.name'></t>" has been Renewed.
+                                </t>
+                                <t t-elif="state =='update'">
+                                    Your plan "<t t-esc='membership.product_id.name'></t>" has been Updated.
+                                </t>
+                                <t t-elif="state =='pending'">
+                                    Your plan "<t t-esc='membership.product_id.name'></t>" will be active after the current plan.
+                                </t>
+                                <t t-elif="state =='expired'">
+                                    Your plan "<t t-esc='membership.product_id.name'></t>" had expired.
+                                </t>
+                                <t t-elif="state =='draft'">
+                                  Your plan "<t t-esc='membership.product_id.name'></t>" is yet to be confirmed.
+                            </t>
+                            </div>
+                        </div>
+                        <div class='com-md-5 ml-auto'>
+                            <t t-if="state =='in_progress'">
+                                <div class='status status_active d-flex justify-content-center align-items-center'>
+                                    <span> Active </span>
+                                </div>
+                            </t>
+                            <t t-elif="state =='cancel' or state == 'close'">
+                                <div class='status status_expire d-flex justify-content-center align-items-center'>
+                                    <span> Cancelled </span>
+                                </div>
+                            </t>
+                            <t t-elif="state =='renewed'">
+                                <div class='status status_renew d-flex justify-content-center align-items-center'>
+                                    <span> Renewed </span>
+                                </div>
+                            </t>
+                            <t t-elif="state =='update'">
+                                <div class='status status_renew d-flex justify-content-center align-items-center'>
+                                    <span> Updated </span>
+                                </div>
+                            </t>
+                                <t t-elif="state =='pending'">
+                                <div class='status status_renew d-flex justify-content-center align-items-center'>
+                                    <span> Pending </span>
+                                </div>
+                            </t>
+                            <t t-elif="state =='expired'">
+                                <div class='status status_expire d-flex justify-content-center align-items-center'>
+                                    <span> Exprired </span>
+                                </div>
+                            </t>
+                             <t t-elif="state =='draft'">
+                                <div class='status status_draft d-flex justify-content-center align-items-center'>
+                                    <span> Waiting </span>
+                                </div>
+                            </t>
+                            <span class='d-none mem_id' t-esc="membership.id"/>
+                        </div>
+                        <div class='col-md-12'>
+                        
+                        
+                            <t t-call="website_membership_management.membeship_update_modal"/>
+                            <t t-if="state in ['in_progress']">
+                                <a href='#' class='update' data-toggle="modal" data-target="#membership_update">
+                                    Update Membership Plan
+                                </a>
+                            </t>
+                        </div> 
+                    </div>
+                    
+                    <div class="row">
+                        <div class='col-md-6'>
+                            <div class='row mr-0 mt-3' >
+                                <h2>
+                                    Plan Information
+                                </h2>
+                            
+                            <div class='info'>
+                                <div class='col-xs-12'>Plan Name : <div class='float-right'><t t-esc='membership.product_id.membership_plan_id.name'/></div></div>
+                                
+                                <div class='col-xs-12'>Plan Price : 
+                                    <div class='float-right'>
+                                        <t t-set='current_website' t-value="request.env['website'].sudo().get_current_website()"/>
+                                        <t t-if='in_progress_check'>
+                                            <t t-set='pricelist' t-value='in_progress_check.membership_plan_id.membership_pricelist'/>
+                                        </t>
+                                        <t t-else=''>
+                                            <t t-set='pricelist' t-value="current_website.get_current_pricelist()"/>
+                                        </t>
+                                        <t t-set="combination_info" t-value="membership.product_id._get_combination_info_variant(add_qty=add_qty, pricelist=pricelist)"/>
+                                        <t t-set='product' t-value='membership.product_id'/>
+                                        <t t-call='website_sale.product_price'/>
+                                    </div>
+                           
+                                </div>
+                                <div class='col-xs-12'>Start Date : <div class='float-right'><t t-esc='membership.start_date'/></div></div>
+                                <div t-if='not membership.auto_renewal' class='col-xs-12'>End Date : <div class='float-right'><t t-esc='membership.end_date'/></div></div>
+                                <div t-if='membership.auto_renewal' class='col-xs-12'>Last Revewal Date : <div class='float-right'><t t-esc='membership.last_renewal_date'/></div></div>
+                                <div class='col-xs-12'>Auto Renewal : <div class='float-right'><t t-if='membership.auto_renewal'><span> Yes </span> </t> <t t-else=''><span> No </span></t></div></div>
+                                <div class='col-xs-12'>Trial Period : <div class='float-right'><t t-if='membership.trial_period'><t t-esc='membership.trial_duration'/> <t t-esc='membership.trial_plan_unit'/></t><t t-else=''>N.A.</t></div></div>
+                            </div>
+                            </div>
+                        </div>
+                        <div  class='col-md-6'>
+                            <div class='row ml-0 mt-3' >
+                                <h2>
+                                    Payment Information
+                                </h2>
+                                <div class='info'>
+                                    <div t-if="membership.plan_state=='in_progress'" class='col-xs-12'>Date of Next Payment : <div class='float-right'><t t-esc='membership.next_payment_date'/></div></div>
+                                    <div t-if="not membership.plan_state =='in_progress'" class='col-xs-12'> No Payments are pending/Upcoming </div>
+                                    <div class='col-xs-12'>No. of billing Cycles: <div class='float-right'><t t-esc='membership.invoice_count'/></div></div>
+                                </div>
+                            </div>                                                 
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+<!-- Memberships Table           -->
+        <template id='my_memberships'>
+            <t t-call="portal.portal_layout">
+                <t t-set='additional_title'>My Membership </t>
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set='title'>Memberships</t>
+                </t>
+                <h3>Membership</h3>
+                <t t-set='in_progress_check' t-value='false'/>
+                <t t-foreach="website.get_membership_count()" t-as='membership_in_progress'>
+                    <t t-if="membership_in_progress.plan_state == 'in_progress' ">
+                        <t t-set='in_progress_check' t-value='membership_in_progress'/>
+                    </t>
+                </t>
+                <t t-call='portal.portal_table'>
+                    <thead>
+                        <tr class="active">
+                            <th>Plan Name</th>
+                            <th class='text-center'>Trial Period</th>
+                            <th class='text-center'>Membership Plan</th>
+                            <th class='text-center'>Start Date</th>
+                            <th class='text-center'>End Date</th>
+                            <th class='text-right'>State</th>
+                        </tr>
+                    </thead>
+                    <t t-foreach="memberships" t-as="membership">
+                        <tr>
+                            <td><a t-attf-href='/my/membership/{{ slug(membership) }}'><t t-esc='membership.name'/></a></td>
+                            <td class='text-center'>
+                                <t t-if='membership.trial_period'>
+                                    <t t-esc='membership.trial_duration'/><t t-esc='membership.trial_plan_unit'/>
+                                </t>
+                                <t t-else=''>
+                                    <span>N/A</span>
+                                </t>
+                            </td>
+
+                            <td class='text-center'><t t-esc='membership.membership_plan_id.name'/></td>
+                            <td class='text-center'> 
+                                <t t-if="membership.start_date">
+                                    <t t-esc='membership.start_date'/>
+                                </t>
+                                <t t-else=''>
+                                    <span>-</span>
+                                </t>
+                            </td>
+                            <td class='text-center'>
+                                <t t-if="membership.end_date">
+                                    <t t-esc='membership.end_date'/>
+                                </t>
+                                <t t-else=''>
+                                    <span>-</span>
+                                </t>
+                            </td>
+                            
+                            <td>
+                                <t t-if='membership.plan_state in ["close"]'>
+                                    <div class="status status_expire pull-right d-flex justify-content-center align-items-center"   title="Your Current membership is  active.">
+                                        Cancelled</div>
+                                </t>
+                                <t t-elif='membership.plan_state in ["draft"]'>
+                                    <div class="status status_draft text-center pull-right"  title="Your Current membership is to be under progress.It will active soon.">Waiting</div>
+                                </t>
+                                <t t-elif='membership.plan_state in ["in_progress"]'>
+                                    <div class="status status_active pull-right d-flex justify-content-center align-items-center"   title="Your Current membership is  active.">
+                                        Active</div>
+                                </t>
+                                <t t-elif='membership.plan_state in ["cancel"]'>
+                                    <div class="status status_expire pull-right d-flex justify-content-center align-items-center"  title="This membership is cancelled. You cannot access it any more.">
+                                        Cancelled
+                                    </div>
+                                </t>
+                                <t t-elif='membership.plan_state in ["expired"]'>
+                                    <div class="status status_expire pull-right d-flex justify-content-center align-items-center"  title="Your membership is expired.Please Renew it.">
+                                        Expired
+                                    </div>
+                                </t>
+                                <t t-elif='membership.plan_state in ["renewed"]'>
+                                    <div class="status status_renew pull-right d-flex justify-content-center align-items-center"  title="This membership is Renewed.">
+                                        Renewed
+                                    </div>
+                                </t>
+                                <t t-elif='membership.plan_state in ["update"]'>
+                                    <div class="status status_renew pull-right d-flex justify-content-center align-items-center"  title="This membership is updated.">
+                                        Updated
+                                    </div>
+                                </t>
+                                <t t-elif='membership.plan_state in ["pending"]'>
+                                    <div class="status status_renew pull-right d-flex justify-content-center align-items-center"  title="This membership is Pending.">
+                                        Pending
+                                    </div>
+                                </t>
+                                </td>
+                        </tr>
+                    </t>
+                </t>
+                <t t-if='not in_progress_check'>
+                            You don't have an active membership.<a href='/membership/'><b>Buy One Now.</b></a>
+                </t>
+            </t>
+        </template>
+
+<!-- Membership Cancel Modal     -->
+        <template id='membership_cancel_modal'>
+            <div class="modal fade" id="membership_cancel" role='dialog'>
+                <div class='modal-dialog'>
+                    <div class='modal-content'>
+                        <div class='modal-header'>
+                            <h4 class='modal-title'>Cancel Membership </h4>
+                        </div>
+                        <div class='modal-body'>
+                            <form method="post" action="/membership/cancel">
+                                <div class="form-group">
+                                    <label for="reason">Reason</label>
+                                        <select id='reason' name='cancel_reason' palceholder='Cancel Reason' class='form-control' aria-describedby="ReasonHelp">
+                                        <t t-foreach='reason' t-as='cancel_reason'>
+                                            <option t-attf-value="#{cancel_reason.id}"><t t-esc="cancel_reason.name"/></option>
+                                        </t>
+                                    </select>
+                                      
+                                    <small id="ReasonHelp" class="form-text text-muted">We're sad watching you leave.</small>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name='mem_mem_record' t-att-value='membership.id' class='d-none'/>
+                                    <label for="comment_cancel">Comment</label>
+                                    <textarea class="form-control" name='comment_cancel' id="comment_cancel" rows="3" ></textarea>
+                                </div>
+                                <div class='membership_update_message' t-if='membership.plan_state in ["pending"]'>Note: Amount will not be refunded for the pending membership</div>
+                                <button type="submit" class="btn btn-danger">Cancel</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+<!-- Membership Update Modal     -->
+        <template id='membeship_update_modal'>
+            <div class="modal fade" id="membership_update" role="dialog">
+                <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                    <h4 class="modal-title">
+                                        Membership Update
+                                    </h4>
+                            </div>
+                            <div class="modal-body">
+                                
+                                <t t-if='in_pending_check'>
+                                    <div class='membership_update_message'>
+                                        You already have an Pending Membership Plan,
+                                        Please Cancel that to update to another Membership Plan.
+                                    </div>
+                                    
+                                        
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                                    
+                                </t>
+                                <t t-else="">
+                                    <form method="post" action="/membership/update">
+                                        <div class="radio">
+                                            <label><input type="radio" name="optradio" value='immediate'  checked='checked'/>Update Immediately </label>
+                                        </div>
+                                        <div class="radio">
+                                            <label><input type="radio" name="optradio" value='after' />Update After Current Plan</label>
+                                        </div>
+                                        <div class='membership_update_message'>This Will Cancel the current Membership, NO AMOUNT WILL BE REFUNDED</div>
+                                    
+                                    <div class="modal-footer">
+                                        <button type='submit' class='btn btn-default'>Next</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                    </form>
+                                </t>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </template>
+
+ 
+<!--Membership Cart              -->
+        <template id="edit_cart" inherit_id='website_sale.cart_lines'>
+            <xpath expr="//div[contains(@class,'css_quantity')]" position="replace">
+                <t t-if=' not line.product_id.is_a_membership'>
+                    <div t-if="not line.linked_line_id" class="css_quantity input-group oe_website_spinner">
+                        <div class="input-group-prepend">
+                            <a t-attf-href="#" class="btn btn-link js_add_cart_json d-none d-md-inline-block" aria-label="Remove one" title="Remove one">
+                                <i class="fa fa-minus"></i>
+                            </a>
+                        </div>
+                        <input type="text" class="js_quantity form-control quantity" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty) == line.product_uom_qty and int(line.product_uom_qty) or line.product_uom_qty" />
+                        <div class="input-group-append">
+                            <a t-attf-href="#" class="btn btn-link float_left js_add_cart_json d-none d-md-inline-block" aria-label="Add one" title="Add one">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </div>
+                    </div>
+                </t>
+                <t t-else=''>
+                    <p>1</p>
+                    <input type="hidden" class="js_quantity form-control quantity" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="1"  readonly=''/>
+                </t>
+            </xpath>
+
+            <xpath expr='//td[@class="td-product_name"]/div/t' position='after'>
+                <t t-if='line.product_id.is_a_membership'>
+                    <p><b>( Membership Plan )</b></p>
+                </t>
+            </xpath>
+
+        </template>
+
+<!--Membership Cart_Summary      -->
+        <template id="edit_membership_product" inherit_id='website_sale.cart_summary'>
+            <xpath expr='//td[@class="td-product_name"]/div/strong' position='after'>
+                 <t t-if='line.product_id.is_a_membership'>
+                    <p><b>( Membership Plan)</b></p>
+                </t>
+            </xpath>
+    </template>
+
+
+<!-- Membership Product Page     -->
+        <template id='membership_products' inherit_id='website_sale.product'>
+             <xpath expr="//div[contains(@class,'css_quantity')]" position="attributes">
+            <attribute name="t-att-class">'d-none css_quantity input-group oe_website_spinner' if product.is_a_membership else 'css_quantity input-group oe_website_spinner'</attribute>
+        </xpath>
+
+            
+            <xpath expr="//div[@class='css_quantity input-group oe_website_spinner']" position="before">
+                <p t-if='product.is_a_membership'> This is a Membeship </p>
+            </xpath>
+            
+            <xpath expr="//div//a[@class='btn btn-primary btn-lg mt8 js_check_product a-submit']" position='replace'>
+                <a t-if='not product.is_a_membership' id="add_to_cart" class="btn btn-primary btn-lg mt8 js_check_product a-submit" href="#">Add to Cart</a>
+
+                <t t-if='product.is_a_membership'>
+                    <t t-set='membership_count' t-value="len(request.website.sale_get_order().website_order_line.mapped('product_id').filtered(lambda p: p.is_a_membership))"/>
+                    <t t-set='in_progress_check' t-value='false'/>
+                    <t t-foreach="website.get_membership_count()" t-as='membership_in_progress'>
+                        <t t-if="membership_in_progress.plan_state == 'in_progress' ">
+                            <t t-set='in_progress_check' t-value='membership_in_progress'/>
+                        </t>
+                    </t>
+                    <a t-if='not in_progress_check and membership_count == 0 and request.env.user.id != request.website.user_id.id' role="button" id="add_to_cart" class="btn btn-primary btn-lg mt8 js_check_product a-submit" href="#">
+                        <strong>Get Membership</strong>
+                    </a>
+
+                    <a t-if='in_progress_check and membership_count == 0' role="button" id="add_to_cart" class="btn btn-primary btn-lg mt8 js_check_product a-submit"  href="#">
+                                <strong>Update Membership</strong>
+                    </a>
+                    
+                            
+
+                    <t t-if='in_progress_check'>
+                        <t t-if='membership_count > 0'>
+                            <a role="button" id="add_to_cart" class="multi_membership btn btn-primary btn-lg mt8 js_check_product a-submit"  href="#">
+                                <strong>Update Membership</strong>
+                            </a>
+                            
+                               
+                            
+                        </t>
+                        
+                    </t>
+                    
+                    <t t-else=''>
+                        <t t-if='request.env.user.id == request.website.user_id.id'>
+                            <a role="button" id="add_to_cart" class="d-none btn btn-primary btn-lg mt8 js_check_product a-submit" href="#">
+                                <strong>Get Membership</strong>
+                            </a>
+                            
+                            
+                        </t>
+                        <t t-else=''>
+                            <t t-if='membership_count > 0'>
+                                <a role="button" id="add_to_cart" class="multi_membership btn btn-primary btn-lg mt8 js_check_product a-submit"  href="#">
+                                    <strong>Get Membership</strong>
+                                </a>
+                                
+                            </t>
+                            
+                        </t>
+                    </t>    
+                    
+                </t>
+                
+            </xpath>
+            <xpath expr="//div[hasclass('js_product')]" position="after">
+                
+                <t t-set='membership_count' t-value="len(request.website.sale_get_order().website_order_line.mapped('product_id').filtered(lambda p: p.is_a_membership))"/>
+                <t t-set='in_progress_check' t-value='false'/>
+                <t t-set='in_pending_check' t-value='false'/>
+                    <t t-foreach="website.get_membership_count()" t-as='membership_in_progress'>
+                        <t t-if="membership_in_progress.plan_state == 'in_progress' ">
+                            <t t-set='in_progress_check' t-value='membership_in_progress'/>
+                        </t>
+                        <t t-if="membership_in_progress.plan_state == 'pending' ">
+                            <t t-set='in_pending_check' t-value='membership_in_progress'/>
+                        </t>
+
+                </t>
+
+                <p t-if='membership_count > 0 and product.is_a_membership' class='multi_membership_message mt-2'>You already have Membership in Cart <br/></p>
+                <p t-if='in_pending_check and product.is_a_membership' class='membership_update_message mt-2 p-2'>This Will Cancel the current Membership, NO AMOUNT WILL BE REFUNDED<br/></p>
+                <div t-if='in_progress_check and product.is_a_membership' class='membership_current_plan mt-2 card p-2'>
+                            <p> Current Plan: 
+                            <t t-esc='in_progress_check.membership_plan_id.name'/></p>
+                            <a t-attf-href='/my/membership/{{ slug(in_progress_check) }}'><strong>View Membership Details</strong></a>
+                </div>
+                <a t-if='request.env.user.id == request.website.user_id.id and product.is_a_membership' class='membership_login mt-2 btn btn-primary' t-att-href="'/web/login?redirect=' +str(request.httprequest.environ.get('PATH_INFO')) + '?' + str(request.httprequest.environ.get('QUERY_STRING'))">
+                            Please Sign In to continue
+                            </a>
+
+            </xpath>
+            <xpath expr="//div//section[@id='product_detail']" position="after">
+                <div class='container'>
+                    <t t-call="website_membership_management.Membership_read_more_modal"/>      
+                    <div class='loop owl-carousel owl-theme' id='membership_divs'>
+                     <t t-set='counter' t-value='str(0)'/>
+                      <t t-foreach='product.product_variant_ids' t-as='membership'>
+                        <t t-if='membership.is_a_membership'>
+                            <div class='item container-fluid text-wrap membership_buy_plan' t-att-data-id ='membership.id' t-att-data-counter='counter'>
+                            <t t-set='counter' t-value='int(counter)+1'/>
+                                <div class='col membership_highlighted'>
+                                    <h4>
+                                        <b><i><t t-esc='membership.name'/></i></b>
+                                    </h4>
+                                </div>
+                                <div class='col'>
+                                    <span t-field="membership.image" t-options="{'widget': 'image'}" class='membership_image'/>
+                                </div>
+                                <div class='col membership_highlighted'>
+                                    <span class='price'> Price:</span>  <t t-set="combination_info" t-value="membership._get_combination_info_variant(add_qty=add_qty, pricelist=pricelist)"/><t t-call='website_sale.product_price'/>
+                                      <p class='mem_unit'> /<t t-esc='membership.membership_plan_id.plan_unit'/></p>
+                                </div>
+                                <div class='col plan_information border_trial' t-if='membership.membership_plan_id.trial_period'>
+                                   <b> Trial Duration :</b> <t t-esc='membership.membership_plan_id.trial_duration'/> <t t-esc='membership.membership_plan_id.trial_plan_unit'/> from the date of purchasing
+                                </div>
+                                <div class='col plan_information mb-5'>
+                                    <b> Plan Description :</b>
+                                    <t t-if ='membership.membership_plan_id.membership_description' t-set='length' t-value='len(membership.membership_plan_id.membership_description)'/>
+                                    <p class='plan_info_mem'>
+                                        <t t-esc='membership.membership_plan_id.membership_description'/>
+                                    </p>
+                                    <a t-if='length > 120' href='#' class='d-block read_more' data-toggle="modal" data-target="#Membership_readMore">
+                                        Read More...
+                                    </a>
+                                </div>
+                            </div>
+                        </t>
+                        </t>
+                    </div>        
+                </div>
+            </xpath>
+        </template>
+
+     
+
+
+<!--Memberships Buy page         -->
+        <template id='membership_plan'>
+            <t t-call='website.layout'>
+                <t t-set='additional_title'>Membership Plan </t>
+                <div id='wrap'>
+                    <div class='container'>
+                        <div class='row justify-content-center'>
+                            <h1>
+                                Membership Plans
+                            </h1>
+                        </div>
+                        <div class='row justify-content-center'>
+                            <p>
+                                A demo Message regarding the memberships and a welcoming message 
+                            </p>
+                        </div>
+                        <br/>
+                        <div class='row justify-content-around'>
+                            <t t-foreach='mem_product' t-as='membership'>
+                                <div class='col container-fluid text-wrap membership_buy_plan membership_hover'>
+                                    <div class='col membership_highlighted'>
+                                        <h4>
+                                            <b><i><t t-esc='membership.name'/></i></b>
+                                        </h4>
+                                    </div>
+                                    <div class='col'>
+                                        <span t-field="membership.image" t-options="{'widget': 'image'}" class='membership_image'/>
+                                    </div>
+                                    <div class='col membership_highlighted'>
+                                        <h5>
+                                            <b> 
+                                                <span>
+                                                    <t t-set='in_progress_check' t-value='bool(0)'/>
+                                                    <t t-foreach="website.get_membership_count()" t-as='membership_in_progress'>
+                                                        <t t-if="membership_in_progress.plan_state == 'in_progress'">
+                                                            <t t-set='in_progress_check' t-value='membership_in_progress'/>
+                                                        </t>
+                                                    </t>
+                                                    <t t-set='current_website' t-value="request.env['website'].sudo().get_current_website()"/>
+                                                    <t t-if='in_progress_check'>
+                                                        <t t-set='pricelist' t-value='in_progress_check.membership_plan_id.membership_pricelist'/>
+                                                    </t>
+                                                    <t t-else=''>
+                                                        <t t-set='pricelist' t-value="current_website.get_current_pricelist()"/>
+                                                    </t>
+                                                    <t t-set="combination_info" t-value="membership._get_combination_info(add_qty=add_qty, pricelist=pricelist)"/>
+                                                    <t t-set='product' t-value='membership'/>
+                                                    <t t-call='website_sale.product_price'/>
+                                                </span>
+                                            </b>
+                                        </h5>
+                                       <p class='mem_unit'> /<t t-esc='membership.membership_plan_id.plan_unit'/></p>
+                                    </div>
+                                    <div class='col plan_information border_trial' t-if='membership.membership_plan_id.trial_period'>
+                                       <b> Trial Duration :</b> <t t-esc='membership.membership_plan_id.trial_duration'/> <t t-esc='membership.membership_plan_id.trial_plan_unit'/> from the date of purchasing
+                                    </div>
+                                    <div class='col plan_information mb-5'>
+                                        <b> Plan Description :</b>
+                                        <t t-call="website_membership_management.Membership_read_more_modal"/>      
+                                        <t t-if='membership.membership_plan_id.membership_description' t-set='length' t-value='len(membership.membership_plan_id.membership_description)'/>
+                                        <p class='plan_info_mem'>
+                                            <t t-esc='membership.membership_plan_id.membership_description'/>
+                                        </p>
+                                        <a t-if='length > 120' href='#' class='d-block read_more' data-toggle="modal" data-target="#Membership_readMore">
+                                            Read More...
+                                        </a>
+                                    </div>
+                                    <div class='col Buy_Now_member '>
+                                        <a t-attf-href='/shop/product/{{ slug( membership )}}' class="btn btn-light" >
+                                            <i class="fa fa-shopping-cart"></i> BUY NOW
+                                        </a>
+                                    </div>
+                                   
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div> 
+            </t>
+        </template>
+
+<!-- No Membership page          -->
+        <template id='Membership|Buy'>
+            <t t-call='website.layout'>
+                <div class='container'>
+                    <div class='row justify-content-center'>
+                        <h1 class='oops'> Oops!</h1>
+                    </div>
+                    <br/>
+                    <div class='row justify-content-center'>
+                        <p class='membership_message'> You don't  have any Membership. </p>
+                        <br/>
+                    </div>
+                    <div class='row justify-content-center'>
+                        <h3 class='buy'> Don't Miss the Most awesome features and privilage. 
+                            <a href='/membership/' class="btn btn-primary btn-lg">
+                                <strong>Buy Now</strong>
+                            </a></h3>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+<!--Read More Modal              -->
+
+        <template id='Membership_read_more_modal'>
+            <div class="modal fade" id="Membership_readMore" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Membership Plan Details</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p class="read_more_body">
+                                
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        
+
+    </data>
+</odoo>
+
+
+  

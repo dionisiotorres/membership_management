@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data noupdate="0">
+
+        <record id="mem_cancel_reason_1" model="membership.reasons">
+            <field name="name">Too Expensive</field>
+            <field name='sequence'>0</field>
+        </record>
+
+        <record id="mem_cancel_reason_2" model="membership.reasons">
+            <field name="name">Other</field>
+            <field name='sequence'>1</field>
+        </record>
+
+        <!-- <record id='Membership_admin_default' model='res.users'> -->
+
+    </data>
+</odoo>

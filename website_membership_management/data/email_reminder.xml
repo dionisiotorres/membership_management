@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data noupdate='1'>
+        <record id='membership_reminder_email' model='mail.template'>
+            <field name='name'>Membership Reminder E-Mail</field>
+            <field name='email_from'>${object.company_id and object.company_id.email or ''}</field>
+            <field name='subject'>Membership About to End </field>
+            <field name='email_to'>${object.customer_name.email|safe}</field>
+            <field name='model_id' ref='website_membership_management.model_membership_membership'/>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html">
+                <![CDATA[
+                    <p>Dear ${(object.customer_name.name)},<br/><br/>
+                    Your memberrship will expire soon,
+                    renew or buy a new one <br/></p>
+                ]]>
+	        </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,235 @@
+// #add_to_cart{
+//     margin-bottom: 1vw;
+// }
+
+.oops{
+    font-size: 90px;
+    color: red;
+    
+}
+
+.membership_message{
+    color: black;
+    font-size: 45px;
+    
+}
+
+.buy{
+    font-size:22.5px;
+    color: green;
+}
+
+.plan_detail{
+    font-size: 22px;
+}
+
+.status{
+    width: 101%;
+    height: 120%;
+    font-size: 20px;
+    float: right;
+    overflow: hidden;
+}
+
+.status_active{
+    
+    color: #2AB36D;
+    border: solid #2AB36D 1px;   
+}
+
+.status_expire{
+    
+    color: lightcoral;
+    border: 1px solid firebrick;
+}
+
+.status_draft{
+    color:rgb(19, 90, 138);
+    
+    border:1px solid #3c92f5;
+  
+}
+
+.status_renew{
+    color:rgb(2, 77, 238);
+    
+    border:1px solid #7b86ee;
+  
+}
+
+.membership_detail{
+    border: groove 1px;
+    border-radius: 2px;
+    padding: 1%;   
+}
+ 
+.update{
+    float: right;
+    padding-top: 1%;
+}
+.info{
+    box-sizing: border-box;
+    border: groove 1px;
+    border-radius: 2px;
+    margin-top: 1%;
+    padding: 1%;
+    font-size: 17px;
+    height: 14rem;
+    width: 104%;
+    background: white !important;
+    .product_price{
+        margin-top: unset !important;
+        h4{
+            margin: unset !important;
+        }
+        b{
+            font-weight: unset !important;
+            font-size: 17px !important;
+        }
+    }
+
+}
+
+
+
+.membership_update_message{
+    color: red;
+}
+
+
+
+
+
+#comment_cancel{
+    resize: vertical;
+}
+
+.membership_image{
+    .img-fluid{
+        max-width: 60%;
+        margin: 15px 0px 15px 0px;
+    }
+
+}
+.owl-item{
+    .item{
+        margin-top:7px;
+    }
+    .membership_image{
+        .img-fluid{
+            margin-left: 40px;
+        }
+    }
+}   
+.membership_buy_plan{
+    max-width:15rem;
+    min-width:15rem;
+    min-height:26rem;
+    text-align:center;
+    border: 1px solid;
+    overflow: hidden;
+    margin-left:20px;
+    margin-bottom:20px;
+    border-radius: 8px;
+    
+}
+.buy_now_membership{
+    position: absolute;
+    bottom:5px;
+}
+.plan_information{
+    text-align: left;
+    color:black !important;
+    padding: 5px 6px 5px 6px;
+    text-decoration: none;
+    b{
+        color:black !important;
+    }
+}
+
+.membership_highlighted{
+    background: #3c92f5;
+    color:white;
+    height: 9%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding-top: 5px;
+    .product_price{
+        margin-top: unset !important;
+    }
+}
+
+.border_trial{
+    border-bottom:1px solid;
+    color:black !important;
+}
+.membership_hover:hover {
+    box-shadow: 0px 0px 30px 7px #F44336;
+
+  }
+  .read_more_body{
+      color:black !important;
+      height: 200px;
+      overflow-y: auto;
+      
+  }
+  .plan_info_mem{
+      max-height: 40px !important;
+      overflow:hidden;
+      color:black;
+  }
+.Buy_Now_member{
+    position: absolute;
+    bottom: 0px;
+    background: #3c92f5;
+    color: white;
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    a{
+        font-size: 12px;
+        padding :5px;
+    }
+    
+}
+.active_product{
+    box-shadow: 0px 0px 8px 3px #F44336;
+
+}
+.price{
+    font-size: 14px;
+    padding-right: 7px !important;
+}
+.mem_unit{
+    font-size: 14px;
+    padding-left: 1%;
+    margin: unset !important;
+}
+.public_user_message{
+    font-size: 17px;
+    border-radius: 6px;
+    width: 66%;
+    background: #ff8080;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    font-weight: bold;
+    color: white;
+}
+.multi_membership{
+    pointer-events: none;
+    opacity: 0.65;
+}
+.multi_membership_message{
+    font-size: 17px;
+    background: #ff8080;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    font-weight: bold;
+    color: white;
+    width: 87%;
+}

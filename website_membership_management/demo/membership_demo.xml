@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data noupdate="0">
+        <record id='mem_1' model='membership.membership'>
+            <field name='customer_name' eval='9'/>
+            <field name='product_id' ref='website_membership_management.product_product_1c'/>
+            <field name='membership_plan_id' ref='website_membership_management.mem_plan_1'/>
+            <field name='price'>35000</field>
+            <field name='trial_duration'>1</field>
+            <field name='trial_plan_unit'>week</field>
+        </record>
+        <record id='mem_2' model='membership.membership'>
+            <field name='customer_name' eval='3'/>
+            <field name='product_id' ref='website_membership_management.product_product_2b'/>
+            <field name='membership_plan_id' ref='website_membership_management.mem_plan_5'/>
+            <field name='price'>8500</field>
+            <field name='trial_duration'>1</field>
+            <field name='trial_plan_unit'>week</field>
+        </record>
+        <record id='mem_3' model='membership.membership'>
+            <field name='customer_name' eval='7'/>
+            <field name='product_id' ref='website_membership_management.product_product_3c'/>
+            <field name='membership_plan_id' ref='website_membership_management.mem_plan_9'/>
+            <field name='price'>2000</field>
+            <field name='trial_duration'>1</field>
+            <field name='trial_plan_unit'>week</field>
+            <field name='auto_renewal' eval='True'/>
+        </record>
+
+        
+        
+    </data>
+</odoo>

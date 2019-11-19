@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data>
+        <record id='membership_plan_form' model='ir.ui.view'>
+            <field name='name'>Membership Plan Form </field>
+            <field name='model'>membership.plan</field>
+            <field name='arch' type='xml'>
+                <form string='Membership Plan'>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                            </button>
+                             <button name="action_view_membership" type="object" class="oe_stat_button" icon="fa-check">
+                                <field string="Memberships" name="total_membership" widget="statinfo"/>
+                            </button>
+                        </div>
+                        <div class='oe_title'>
+                            <label class='oe_edit_only' for='name' string='Plan Name' />
+                            <h1>  
+                                <field name='name' placeholder='Membership Plan Name' />
+                            </h1>
+                        </div>
+
+                        <group string='Plan Information'>
+                            <group>
+                                <label for='duration' string='Duration'/>
+                                <div name='duration'>
+                                    <field name='duration' class='oe_inline' nolabel='1'/>
+                                    <field name='plan_unit' class='oe_inlinr' nolabel='1'/>
+                                </div>
+                                <field name="currency_id" invisible="1" />
+                                <field name='price' widget='monetary' options="{'currency_field': 'currency_id'}" />
+                            </group>
+
+                            <group>
+                                <field name='start'/>
+                                <field name='auto_renewal'/>
+                                <field name='trial_period'/>
+                                <label for='trial_duration' string='Trial Duration' attrs="{'invisible':[('trial_period','=',False)],'required':[('trial_period','=',True)]}"/>
+                                <div name='trial_duration' attrs="{'invisible':[('trial_period','=',False)]}">
+                                    <field name='trial_duration' />
+                                    <field name='trial_plan_unit'/> 
+                                </div>
+                            </group>
+                        </group>
+                        <group>
+                            <field name='membership_pricelist'/>
+                            <field name='membership_description'/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="membership_plan_tree_view" model="ir.ui.view">
+            <field name="name">membership plan tree view</field>
+            <field name="model">membership.plan</field>
+            <field name="arch" type="xml">
+                <tree string="membership Plans">
+                    <field name="name"></field>
+                    <field name="duration"></field>
+                    <field name="plan_unit"></field>
+                     <field name="currency_id" invisible="1" />
+                     <field name='price' widget='monetary' options="{'currency_field': 'currency_id'}" />
+                </tree>
+            </field>
+        </record>        
+
+
+            <record id="membership_plan_kanban_view" model="ir.ui.view">
+            <field name="name">membership.plan.kanban.view</field>
+            <field name="model">membership.plan</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="name"/>
+                    <field name="duration"/>
+                    <field name="plan_unit"/>
+                    <field name="currency_id" invisible="1" />
+                    <field name='price' widget='monetary' options="{'currency_field': 'currency_id'}" />
+                    <field name="trial_duration"/>
+                    <field name="trial_plan_unit"/>
+                    <field name="trial_period"/>
+                    <field name="total_membership"/>
+                    <field name="color"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click">
+                                <div class="o_dropdown_kanban dropdown" >
+                                    <a class="dropdown-toggle btn" data-toggle="dropdown" href="#" >
+                                        <span class="fa fa-bars fa-lg"/>
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                        <t t-if="widget.editable"><li><a type="edit">Edit Plan</a></li></t>
+                                        <li><a name="action_view_membership" type="object">Memberships</a></li>
+                                        <li><ul class="oe_kanban_colorpicker" data-field="color"/></li>
+                                    </ul>
+                                </div>
+                                <div class="oe_kanban_content oe_kanban_details">
+                                    <div style="">
+                                        <b>
+                                            <field name="name"/>
+                                            <br/>
+                                            <b style="color: black;">Duration: </b>
+                                            <field name="duration"/> <field name="plan_unit"/>
+                                        </b>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left text-muted">
+                                        <div title="Price">
+                                             <b style="color: black;">Price: </b>
+                                                 <field name="currency_id" invisible="1" />
+                                                 <field name='price' widget='monetary' options="{'currency_field': 'currency_id'}" />
+                                        </div>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right" title="Order Status">
+                                        <a name="action_view_membership" type="object" class="" string="Membership"><field string="Membership" name="total_membership" /> Membership</a>
+                                    </div>
+                                </div>
+                             
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left text-muted">
+                                        <t t-if="record.trial_period.raw_value">
+                                            <div title="Trial Period">
+                                                <b style="color: black;">Trial Period: </b>
+                                                    <field name="trial_duration"/> <field name="trial_plan_unit"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right" >
+                                    </div>
+                                </div>
+
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="action_membership_plan" model="ir.actions.act_window">
+            <field name="name">Membership Plans</field>
+            <field name="res_model">membership.plan</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+        </record>
+
+        <menuitem name="Membership" id="menu_sale_membership" parent="sale.sale_menu_root" sequence="4" />
+        <menuitem name="Membership Information" id="menu_sale_membership_config" parent="sale.menu_sale_config" sequence="2" />
+        <menuitem name="Membership Plans" id="menu_sale_membership_submenu1" parent="menu_sale_membership_config" action="action_membership_plan" />
+        
+            
+        <menuitem name="Membership Information" id="menu_website_membership_config" parent="website.menu_website_global_configuration" sequence="10" />
+        <menuitem name="Membership Plans" id="menu_website_membership_submenu1" parent="menu_website_membership_config" action="action_membership_plan" />
+
+    </data>
+</odoo>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data>
+        <record id='membership_form' model='ir.ui.view'>
+            <field name='name'>Memebership Form </field>
+            <field name='model'>membership.membership</field>
+            <field name='arch' type='xml'>
+                <form string='Membership'>
+                    <header>
+                        <field name="plan_state" widget="statusbar" statusbar_visible="draft,in_progress,cancel"/>
+                        <button name="confirm_membership" string="Confirm" type="object"  class="oe_highlight" attrs="{'invisible':[('plan_state','!=','draft')]}"/>
+                        <button name='membership_renew' string='Renew' type='object' class='oe_highlight' attrs="{'invisible':[('plan_state','in',['draft','in_progress','renewed','pending','update'])]}"/>
+                        <button name="website_membership_management.membership_cancel_reason_wizard_action" string="Cancel" type="action" attrs="{'invisible':[('plan_state','!=','draft')]}" plan_states="draft" class="oe_highlight"  context="{'is_cancel':'True'}"/>
+                        <button name="website_membership_management.membership_cancel_reason_wizard_action" string="Close" type="action" attrs="{'invisible':[('plan_state','!=','in_progress')]}" plan_states="in_progress" class="oe_highlight" />
+                    </header>
+                    
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_invoice"
+                                type="object"
+	                            class="oe_stat_button"
+	                            icon="fa-pencil-square-o"
+	                            attrs="{'invisible': [('invoice_count', '=', 0)]}">
+	                            <field name="invoice_count" widget="statinfo" string="Invoices"/>
+	                        </button>
+	                    </div>
+                        <h1>
+                            <field name="name" attrs="{'invisible':[('name','=',False)]}" />
+                        </h1>
+                        <group name='customer'>
+                            <group string='Customer Information'>
+                                <field name='customer_name'/>
+                            </group>
+                            <group string='Product Information'>
+                                <field name='product_id'/>
+                                <field name='tax_id' widget='many2many_tags'/>
+                            </group>
+                        </group>
+                        <group string='Plan information'>
+                            <group>
+                                <field name='membership_plan_id'/>
+                                <field name='auto_renewal'/>
+                                <field name='trial_period'/>
+                                <label for='trial_duration' string='Trial Duration' attrs="{'invisible':[('trial_period','=',False)],'required':[('trial_period','=',True)]}"/>
+                                <div name='trial_duration' attrs="{'invisible':[('trial_period','=',False)]}">
+                                    <field name='trial_duration'/>
+                                    <field name='trial_plan_unit'/> 
+                                </div>
+                            </group>
+                            <group>
+                                
+                                <field name="currency_id" invisible="1" />
+                                <field name='price' widget='monetary' options="{'currency_field': 'currency_id'}" />
+                                <field name='start_date'/>
+                                <field name='end_date' attrs="{'invisible':[('auto_renewal','=',True)]}"/>
+                            </group>
+                        </group>
+                        <group name="payment" string="Payment Information">
+                            <group>
+                                <field name="source" string="Source" required="1" attrs="{'readonly': [('plan_state', '!=', 'draft')]}"></field>
+                            </group>
+                            <group>
+                                <field name="so_origin" attrs="{'readonly': [('plan_state', '!=', 'draft')],'required':[('source','=','so')],'invisible':[('source','in',[False,'pos','api','manual'])]}"></field>
+                                <field name="membership_id" attrs="{'readonly': [('plan_state', '!=', 'draft')],'invisible':[('membership_id','=',False)]}"></field>
+                            </group>
+                            <group attrs="{'invisible':[('auto_renewal','=',False)]}">
+                                <field name='next_payment_date'/>
+                                <button name="action_invoice_create" string="Generate Invoice" type="object" class="oe_inline oe_link" attrs="{'invisible': ['|',('plan_state', 'in', ['cancel','close'])]}"></button>
+                            </group>
+                            <group string="Extra Menus">
+                                <field name='menu_ids' nolabel="1" widget="many2many_tags"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="reason" attrs="{'invisible': [('reason', '=', False)]}" readonly='1'></field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="membership_tree_view" model="ir.ui.view">
+            <field name="name">membership tree view</field>
+            <field name="model">membership.membership</field>
+            <field name="arch" type="xml">
+                <tree string="membership Plans">
+                    <field name='name'/>
+                    <field name="customer_name"></field>
+                    <field name="start_date"></field>
+                    <field name="plan_state"></field>
+                </tree>
+            </field>
+        </record>       
+
+        <record id='membership_state_cron' model='ir.cron'>
+            <field name="name">Membership State Cron </field>
+            <field name="active" eval="True" />
+            <field name="user_id" ref="base.user_root" />
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall">1</field>
+            <field name="model_id" ref="model_membership_membership" />
+            <field name="state">code</field>
+            <field name="code">model.membership_state()</field>
+            <field name="args" eval="" />
+        </record>
+
+        <record id='membership_action' model='ir.actions.act_window'>
+            <field name='name'>Membership</field>
+            <field name='res_model'>membership.membership</field>
+            <field name='view_type'>form</field>
+            <field name='view_mode'>tree,form</field>
+        </record>
+            
+        <menuitem name="Membership" id="menu_sale_membership_submenu2" parent="menu_sale_membership" action="membership_action"> </menuitem>
+        <menuitem id="menu_website_membership_submenu2" name="Membership" parent="website.menu_website_configuration" action="membership_action" sequence="4"/>
+
+
+
+    </data>
+</odoo>

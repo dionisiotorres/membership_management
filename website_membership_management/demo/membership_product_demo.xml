@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data noupdate="0">
+        <!-- Membership Product Variant-->
+
+        <record id='product_attribute_membership_attribute_1' model='product.attribute'>
+            <field name='name'>Plan</field>
+        </record>
+        <record id='product_attribute_value_membership_1' model='product.attribute.value'>
+            <field name='name'>Yearly</field>
+            <field name='attribute_id' ref='product_attribute_membership_attribute_1'/>
+        </record>
+        <record id='product_attribute_value_membership_2' model='product.attribute.value'>
+            <field name='name'>Quaterly</field>
+            <field name='attribute_id' ref='product_attribute_membership_attribute_1'/>
+        </record>
+        <record id='product_attribute_value_membership_3' model='product.attribute.value'>
+            <field name='name'>Monthly</field>
+            <field name='attribute_id' ref='product_attribute_membership_attribute_1'/>
+        </record>
+
+<!--Gold Membership Product-->
+        <record id="product_product_1" model="product.product">
+            <field name="name">Gold Membership</field>
+            <field name="categ_id" ref="product.product_category_5"/>
+            <field name="standard_price">0</field>
+            <field name="list_price">0</field>
+            <field name="type">service</field>
+            <field name="image_medium" type="base64" file="website_membership_management/static/img/Gold.png"/>
+            <field name="website_published" eval="True"/>
+            <field name='is_a_membership'>1</field> 
+            <!-- <field name='sale_ok'>0</field> -->
+            <!-- <field name='purchase_ok'>0</field> -->
+            <field name='membership_plan_id' ref='mem_plan_3'/>
+            <field name='list_price'>3500</field>
+            <field name="attribute_value_ids" eval="[(6,0,[ref('product_attribute_value_membership_3')])]"/>
+        </record>
+        <record id="product_product_1b" model="product.product">
+            <field name="product_tmpl_id" ref="product_product_1_product_template"/>
+            <field name='is_a_membership'>1</field> 
+            <field name='membership_plan_id' ref='mem_plan_2'/>
+            <field name="attribute_value_ids" eval="[(6,0,[ref('product_attribute_value_membership_2')])]"/>
+        </record>
+        <record id="product_product_1c" model="product.product">
+            <field name="product_tmpl_id" ref="product_product_1_product_template"/>
+            <field name='is_a_membership'>1</field> 
+            <field name='membership_plan_id' ref='mem_plan_1'/>
+            <field name="attribute_value_ids" eval="[(6,0,[ref('product_attribute_value_membership_1')])]"/>
+        </record>
+
+        <record id="product_attribute_line2_1" model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="product_product_1_product_template"/>
+            <field name="attribute_id" ref="product_attribute_membership_attribute_1"/>
+            <field name="value_ids" eval="[(6,0,[ref('website_membership_management.product_attribute_value_membership_1'), ref('website_membership_management.product_attribute_value_membership_2'),ref('website_membership_management.product_attribute_value_membership_3')])]"/>
+        </record>
+
+        <record id="product_product_1_product_template" model="product.template">
+                <field name="attribute_line_ids" eval="[(6,0,[ref('product_attribute_line2_1')])]"/>
+        </record>
+
+        <!-- <function model='product.product' name='_check_description'>
+            <value eval="[ref('product_product_1')]"> </value> 
+        </function> -->
+
+<!-- Silver Membership Product-->
+        <record id="product_product_2" model="product.product">
+            <field name="name">Silver Membership</field>
+            <field name="categ_id" ref="product.product_category_5"/>
+            <field name="standard_price">0</field>
+            <field name="list_price">0</field>
+            <field name="type">service</field>
+            <field name="image_medium" type="base64" file="website_membership_management/static/img/Silver.png"/>
+            <field name="website_published" eval="True"/>
+            <field name='is_a_membership'>1</field>
+            <!-- <field name='sale_ok'>0</field> -->
+            <!-- <field name='purchase_ok'>0</field>              -->
+            <field name='membership_plan_id' ref='mem_plan_6'/>
+            <field name='list_price'>3000</field>
+            <field name="attribute_value_ids" eval="[(6,0,[ref('product_attribute_value_membership_3')])]"/>
+        </record>
+        <record id="product_product_2b" model="product.product">
+            <field name="product_tmpl_id" ref="product_product_2_product_template"/>
+            <field name='is_a_membership'>1</field> 
+            <field name='membership_plan_id' ref='mem_plan_5'/>
+            <field name="attribute_value_ids" eval="[(6,0,[ref('product_attribute_value_membership_2')])]"/>
+        </record>
+        <record id="product_product_2c" model="product.product">
+            <field name="product_tmpl_id" ref="product_product_2_product_template"/>
+            <field name='is_a_membership'>1</field> 
+            <field name='membership_plan_id' ref='mem_plan_4'/>
+            <field name="attribute_value_ids" eval="[(6,0,[ref('product_attribute_value_membership_1')])]"/>
+        </record>
+
+        <record id="product_attribute_line2_2" model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="product_product_2_product_template"/>
+            <field name="attribute_id" ref="product_attribute_membership_attribute_1"/>
+            <field name="value_ids" eval="[(6,0,[ref('website_membership_management.product_attribute_value_membership_1'), ref('website_membership_management.product_attribute_value_membership_2'),ref('website_membership_management.product_attribute_value_membership_3')])]"/>
+        </record>
+
+        <record id="product_product_2_product_template" model="product.template">
+                <field name="attribute_line_ids" eval="[(6,0,[ref('product_attribute_line2_2')])]"/>
+        </record>
+
+        <!-- <function model='product.product' name='_check_description'>
+            <value eval="[ref('product_product_2')]"> </value> 
+        </function> -->
+
+<!--Bronze Membership-->
+        <record id="product_product_3" model="product.product">
+            <field name="name">Bronze Membership</field>
+            <field name="categ_id" ref="product.product_category_5"/>
+            <field name="standard_price">0</field>
+            <field name="list_price">0</field>
+            <field name="type">service</field>
+            <field name="image_medium" type="base64" file="website_membership_management/static/img/Bronze.png"/>
+            <field name="website_published" eval="True"/>
+            <field name='is_a_membership'>1</field>
+            <!-- <field name='sale_ok'>0</field> -->
+            <!-- <field name='purchase_ok'>0</field>  -->
+            <field name='membership_plan_id' ref='mem_plan_9'/>
+            <field name='list_price'>2000</field>
+            <field name="attribute_value_ids" eval="[(6,0,[ref('product_attribute_value_membership_3')])]"/>
+        </record>
+        <record id="product_product_3b" model="product.product">
+            <field name="product_tmpl_id" ref="product_product_3_product_template"/>
+            <field name='is_a_membership'>1</field> 
+            <field name='membership_plan_id' ref='mem_plan_8'/>
+            <field name="attribute_value_ids" eval="[(6,0,[ref('product_attribute_value_membership_2')])]"/>
+        </record>
+        <record id="product_product_3c" model="product.product">
+            <field name="product_tmpl_id" ref="product_product_3_product_template"/>
+            <field name='is_a_membership'>1</field> 
+            <field name='membership_plan_id' ref='mem_plan_7'/>
+            <field name="attribute_value_ids" eval="[(6,0,[ref('product_attribute_value_membership_1')])]"/>
+        </record>
+
+        <record id="product_attribute_line2_3" model="product.template.attribute.line">
+            <field name="product_tmpl_id" ref="product_product_3_product_template"/>
+            <field name="attribute_id" ref="product_attribute_membership_attribute_1"/>
+            <field name="value_ids" eval="[(6,0,[ref('website_membership_management.product_attribute_value_membership_1'), ref('website_membership_management.product_attribute_value_membership_2'),ref('website_membership_management.product_attribute_value_membership_3')])]"/>
+        </record>
+
+        <record id="product_product_3_product_template" model="product.template">
+                <field name="attribute_line_ids" eval="[(6,0,[ref('product_attribute_line2_3')])]"/>
+        </record>
+
+        <!-- <function model='product.product' name='_check_description'>
+            <value eval="[ref('product_product_3')]"> </value> 
+        </function> -->
+
+    </data>
+</odoo>

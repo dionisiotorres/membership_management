@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data noupdate="1">
+
+       <record id="seq_membership" model="ir.sequence">
+            <field name="name">Membership</field>
+            <field name="code">membership.membership</field>
+            <field name="prefix">MEM-</field>
+            <field name="padding">5</field>
+            <field name="membership" eval="False"></field>
+        </record>
+
+    </data>
+</odoo>

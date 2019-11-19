@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data noupdate="0">
+        <record id='mem_plan_1' model='membership.plan'>
+            <field name='name'>Gold(Yearly)</field>
+            <field name='duration'>1</field>
+            <field name='plan_unit'>year</field>
+            <field name='price'>35000</field>
+            <field name='trial_duration'>1</field>
+            <field name='trial_plan_unit'>week</field>
+            <field name='membership_description'>Whole year Christmas Deals and additional perks </field>
+            <field name='membership_pricelist' eval='2'/>
+        </record>
+        <record id='mem_plan_2' model='membership.plan'>
+            <field name='name'>Gold(Quaterly)</field>
+            <field name='duration'>3</field>
+            <field name='plan_unit'>month</field>
+            <field name='price'>10000</field>
+            <field name='trial_duration'>1</field>
+            <field name='trial_plan_unit'>week</field>
+            <field name='membership_description'>Save A lot by choosing this pack</field>
+            <field name='membership_pricelist' eval='2'/>
+        </record>
+        <record id='mem_plan_3' model='membership.plan'>
+            <field name='name'>Gold(Monthly)</field>
+            <field name='duration'>1</field>
+            <field name='plan_unit'>month</field>
+            <field name='price'>3500</field>
+            <field name='trial_duration'>1</field>
+            <field name='trial_plan_unit'>week</field>
+            <field name='membership_description'>Best perks with pocket-friendly nature</field>
+            <field name='membership_pricelist' eval='2'/>
+        </record>        
+        
+        <record id='mem_plan_4' model='membership.plan'>
+            <field name='name'>Silver(Yearly)</field>
+            <field name='duration'>1</field>
+            <field name='plan_unit'>year</field>
+            <field name='price'>25000</field>
+            <field name='trial_duration'>1</field>
+            <field name='trial_plan_unit'>week</field>
+            <field name='membership_description'>Sale Prices for complete year</field>
+            <field name='membership_pricelist' eval='3'/>
+        </record>
+        <record id='mem_plan_5' model='membership.plan'>
+            <field name='name'>Silver(Quaterly)</field>
+            <field name='duration'>3</field>
+            <field name='plan_unit'>month</field>
+            <field name='price'>8500</field>
+            <field name='trial_duration'>1</field>
+            <field name='trial_plan_unit'>week</field>
+            <field name='membership_description'>Save by choosing bigger pack and enjoy the services seemlessly</field>
+            <field name='membership_pricelist' eval='3'/>
+        </record>
+        <record id='mem_plan_6' model='membership.plan'>
+            <field name='name'>Silver(Monthly)</field>
+            <field name='duration'>1</field>
+            <field name='plan_unit'>month</field>
+            <field name='price'>3000</field>
+            <field name='trial_duration'>1</field>
+            <field name='trial_plan_unit'>week</field>
+            <field name='membership_description'>Enjoy the servies with best price</field>
+            <field name='membership_pricelist' eval='3'/>
+        </record>
+            
+        <record id='mem_plan_7' model='membership.plan'>
+            <field name='name'>Bronze(Yearly)</field>
+            <field name='duration'>1</field>
+            <field name='plan_unit'>year</field>
+            <field name='price'>15000</field>
+            <field name='trial_period' eval='True'/>
+            <field name='start' eval='False'/>
+            <field name='trial_duration'>1</field>
+            <field name='trial_plan_unit'>week</field>
+            <field name='membership_description'>Get the deals before anyone else and get the privilage of choosinf first</field>
+            <field name='membership_pricelist' eval='1'/>
+        </record>
+        <record id='mem_plan_8' model='membership.plan'>
+            <field name='name'>Bronze(Quaterly)</field>
+            <field name='duration'>3</field>
+            <field name='plan_unit'>month</field>
+            <field name='price'>5500</field>
+            <field name='trial_period' eval='True'/>
+            <field name='start' eval='False'/>
+            <field name='trial_duration'>1</field>
+            <field name='trial_plan_unit'>week</field>
+            <field name='membership_description'>Save By choosing this and enjoy the services seemlessly </field>
+            <field name='membership_pricelist' eval='1'/>
+        </record>
+        <record id='mem_plan_9' model='membership.plan'>
+            <field name='name'>Bronze(Monthly)</field>
+            <field name='duration'>1</field>
+            <field name='plan_unit'>month</field>
+            <field name='price'>2000</field>
+            <field name='trial_period' eval='True'/>
+            <field name='start' eval='False'/>
+            <field name='trial_duration'>1</field>
+            <field name='trial_plan_unit'>week</field>
+            <field name='membership_description'>Best Pack for frequent users and deal grabbers.</field>
+            <field name='membership_pricelist' eval='1'/>
+        </record>
+
+         <function id="pricelist_enable_function" model="res.config.settings" name="enable_pricelists"/>
+    </data>
+</odoo>
